@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real Estate Buddy</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🏡 Real Estate Buddy</h1>
+        <input id="query" type="text" placeholder="Describe your dream property...">
+        <button onclick="sendQuery()">Search</button>
+        <div id="results"></div>
+    </div>
+<script>
+async function sendQuery() {
+    const query = document.getElementById("query").value;
+    const res = await fetch('/search', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({query})
+    });
+    const data = await res.json();
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = '';
+    data.forEach(prop => {
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `<h3>${prop.project_name} (${prop.type})</h3>
+                         <p><b>Location:</b> ${prop.location}</p>
+                         <p><b>Price:</b> ₹${prop.price_lakhs} Lakhs</p>
+                         <p><b>Area:</b> ${prop.area_sqft} sq.ft</p>
+                         <p><b>Features:</b> ${prop.features.join(', ')}</p>
+                         <p><b>Contact:</b> ${prop.contact}</p>`;
+        resultsDiv.appendChild(div);
+    });
+}
+</script>
+</body>
+</html>
